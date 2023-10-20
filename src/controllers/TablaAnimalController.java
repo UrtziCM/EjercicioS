@@ -1,179 +1,161 @@
 package controllers;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.sql.Date;
 import java.sql.SQLException;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.Persona;
+import model.Animal;
+public class TablaAnimalController {
 
-public class TablaPersonaController {
 
-    @FXML
-    private TableColumn<Persona, String> nombreColumn;
-   
-    @FXML
-    private TableColumn<Persona, String> apellidosColumn;
-    
-    @FXML
-    private TableColumn<Persona, Integer> edadColumn;
-    
     @FXML
     private TextField filterTxtf;
 
     @FXML
-    private TableView<Persona> personaTableView;
+    private ImageView imagenMascota;
+
 
     @FXML
-    private Button agregarButton;
+    private DatePicker primeraDatePicker;
     
     @FXML
-    private Button deleteButton;
-    
-    @FXML
-    private Button modifyButton;
+    private TextArea observacionesTextarea;
 
     @FXML
-    private Button exportarButton;
+    private TableView<Animal> animalTableView;
     
     @FXML
-    private Button importarButton;
-    
-    
-    private ObservableList<Persona> data;
-    private GestorDBPersona gestorDB;
+    private TableColumn<Animal, String> nombreColumn;
     
     @FXML
+    private TableColumn<Animal, String> especieColumn;
+    
+    @FXML
+    private TableColumn<Animal, String> razaColumn;
+
+    @FXML
+    private TableColumn<Animal, Character> sexoColumn;
+
+    @FXML
+    private TableColumn<Animal, Integer> edadColumn;
+    
+    @FXML
+    private TableColumn<Animal, Float> pesoColumn;
+    
+    private ObservableList<Animal> data;
+    private GestorDBAnimal gestorDB;
+
     public void initialize() {
-    	nombreColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-    	apellidosColumn.setCellValueFactory(new PropertyValueFactory<>("apellido"));
-    	edadColumn.setCellValueFactory(new PropertyValueFactory<>("edad"));
-    	gestorDB = new GestorDBPersona();
-    	data = gestorDB.cargarPersonas();
-    	agregarButton.setOnAction(e -> agregarPersona(e));
-    	deleteButton.setOnAction(e -> borrarPersona(e));
-    	/* Añadimos un Listener al texto de el textfield para ejecutarlo por cada carácter introducido*/
-    	filterTxtf.textProperty().addListener(e -> {
-    		/* Creamos una FilteredList con los datos de la tabla */
-    		FilteredList<Persona> filteredData = new FilteredList<Persona>(data);
-    		/* Establecemos la regla del filtro: Si no contiene el texto en el textfield no se muestra */
-    		filteredData.setPredicate(s -> s.getNombre().contains(filterTxtf.getText()));
-    		/* Ordenamos la lista con una SortedList*/
-    		SortedList<Persona> filteredSortedData = new SortedList<Persona>(filteredData);
-    		personaTableView.setItems(filteredSortedData); // Añadimos la lista ordenada a la tabla
-    	});;
-    	ContextMenu cMenuActions = new ContextMenu();
-    	MenuItem modificarMenuI = new MenuItem("Modificar");
-    	modificarMenuI.setOnAction(e -> modificarPersona(e));
-    	MenuItem borrarMenuI = new MenuItem("Borrar");
-    	borrarMenuI.setOnAction(e -> borrarPersona(e));
-		cMenuActions.getItems().add(modificarMenuI);
-		cMenuActions.getItems().add(borrarMenuI);
-		personaTableView.setContextMenu(cMenuActions);
     	
-    	personaTableView.setItems(data);
+    	nombreColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+    	especieColumn.setCellValueFactory(new PropertyValueFactory<>("especie"));
+    	razaColumn.setCellValueFactory(new PropertyValueFactory<>("raza"));
+    	sexoColumn.setCellValueFactory(new PropertyValueFactory<>("sexo"));
+    	edadColumn.setCellValueFactory(new PropertyValueFactory<>("edad"));
+    	pesoColumn.setCellValueFactory(new PropertyValueFactory<>("peso"));
+
+    	gestorDB = new GestorDBAnimal();
+    	data = gestorDB.cargarPersonas();
+    	animalTableView.setItems(data);
     }
     
     @FXML
-    void agregarPersona(ActionEvent event) {
+    void agregarAnimal(ActionEvent event) {
     	int dataLenPreAdd = data.size();
-    	ventanaAgregarPersona();
+    	ventanaAgregarAnimal();
     	if (data.size() != dataLenPreAdd)
     		mostrarVentanaEmergente("Agregada nueva entrada", "Se ha añadido una nueva entrada", AlertType.INFORMATION);
+
+    }
+
+	@FXML
+    void eliminarAnimal(ActionEvent event) {
+
     }
 
     @FXML
-    void borrarPersona(ActionEvent event) {
-    	if (personaTableView.getSelectionModel().getSelectedItem() != null) {
-    		data.remove(personaTableView.getSelectionModel().getSelectedItem());
-    		mostrarVentanaEmergente("Borrada entrada", "Se ha borrado la entrada elegida", AlertType.INFORMATION);    		
-    	}
+    void modificarAnimal(ActionEvent event) {
 
     }
+
     
-
-    @FXML
-    void modificarPersona(ActionEvent event) {
-    	Persona oldPers = personaTableView.getSelectionModel().getSelectedItem();
-		if (comprobarModificacion(personaTableView.getSelectionModel().getSelectedItem())) {  
-			if (!oldPers.equals(personaTableView.getSelectionModel().getSelectedItem()))
-				mostrarVentanaEmergente("Modificada una entrada", "Se ha modificado una entrada con éxito", AlertType.INFORMATION);
-		}
-    }
-     
-    private boolean comprobarModificacion(Persona pers) {
-    	if (pers == null) return false;
-		try {				
-			ventanaModificarPersona(pers);
-		} catch (NumberFormatException numberFormat) {
-			mostrarVentanaEmergente("Edad no es numero", "La edad debe ser un numero", AlertType.ERROR);
-			return false;
-		}
-		return true;
-    }
- 
-    private static void mostrarVentanaEmergente(String titulo,String content, AlertType tipo) {
-    	Alert anadidaPersona = new Alert(tipo);
-		anadidaPersona.setTitle(titulo);
-		anadidaPersona.setHeaderText(null);
-		anadidaPersona.setContentText(content);
-		anadidaPersona.showAndWait();
-    }
-    private boolean ventanaAgregarPersona() {
+    private boolean ventanaAgregarAnimal() {
     	GridPane agregarGPane = new GridPane();
     	TextField nombreTxtf = new TextField();
-    	TextField apellidosTxtf = new TextField();
+    	TextField especieTxtf = new TextField();
+    	TextField razaTxtf = new TextField();
+    	TextField sexoTxtf = new TextField();
     	TextField edadTxtf = new TextField();
+    	TextField pesoTxtf = new TextField();
+    	Button fileButton = new Button("Archivo");
+    	fileButton.setOnAction(e -> {    		
+    		Stage stage = new Stage();
+    		FileChooser fileChooser = new FileChooser();
+    		fileChooser.setTitle("Elige la imagen para el animal");
+    		fileButton.getProperties().put("dest", fileChooser.showOpenDialog(stage));
+    	});
+    	DatePicker dateFirst = new DatePicker();
+    	TextArea obsTextA = new TextArea();
+    	obsTextA.setPromptText("Observaciones");
     	Button agregarButton = new Button("Agregar");
     	agregarGPane.addRow(0, new Text("Nombre: "), nombreTxtf);
-		agregarGPane.addRow(1, new Text("Apellidos: "), apellidosTxtf);
-		agregarGPane.addRow(2, new Text("Edad: "), edadTxtf);
-		agregarGPane.addRow(3, agregarButton);
+		agregarGPane.addRow(1, new Text("Especie: "), especieTxtf);
+		agregarGPane.addRow(2, new Text("Raza: "), razaTxtf);
+		agregarGPane.addRow(3, new Text("Sexo: "), sexoTxtf);
+		agregarGPane.addRow(4, new Text("Edad: "), edadTxtf);
+		agregarGPane.addRow(5, new Text("Peso: "), pesoTxtf);
+		agregarGPane.addRow(6, new Text("Archivo: "), fileButton);
+		agregarGPane.addRow(7, new Text("Fecha de la primera consulta: "), dateFirst);		
+		agregarGPane.addRow(8, obsTextA);
+		agregarGPane.addRow(9, agregarButton);
 		GridPane.setColumnSpan(agregarButton, 2);
-		agregarButton.setMaxWidth(agregarGPane.getWidth());
+		GridPane.setColumnSpan(obsTextA, 2);
 
+		
 		Scene agregarScene = new Scene(agregarGPane);
+		agregarButton.setPadding(new Insets(10));
 		Stage agregarPersonaStg = new Stage();
 		
 		agregarButton.setOnAction(e -> {
 			try {
-				Persona newPersona = new Persona(nombreTxtf.getText(),apellidosTxtf.getText(),Integer.parseInt(edadTxtf.getText()));
-				if (! data.contains(newPersona)) {					
-					data.add(newPersona);
+				Animal newAnimal = new Animal(nombreTxtf.getText(),especieTxtf.getText(),razaTxtf.getText()
+						,sexoTxtf.getText().charAt(0),Integer.parseInt(edadTxtf.getText()),
+						Double.parseDouble(pesoTxtf.getText()),obsTextA.getText(),
+						new Date(dateFirst.getValue().toEpochDay()*24*3600*1000),
+						new Image(this.getClass().getResource("/img/placeholder.png").toString()));
+				if (! data.contains(newAnimal)) {					
+					data.add(newAnimal);
 					try {
-						gestorDB.addPersona(newPersona);
+						gestorDB.addAnimal(newAnimal);
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}
 				}
 				else
 					mostrarVentanaEmergente("Entrada existente", "Esa persona ya está registrada",AlertType.ERROR);
-				personaTableView.setItems(data);
+				animalTableView.setItems(data);
 				agregarPersonaStg.close();
 				return;
 			} catch (NumberFormatException numberFormat) {
@@ -186,43 +168,11 @@ public class TablaPersonaController {
 		agregarPersonaStg.showAndWait();
 		return true;
     }
-    
-    private void ventanaModificarPersona(Persona pers) {
-    	GridPane agregarGPane = new GridPane();
-    	TextField nombreTxtf = new TextField();
-    	nombreTxtf.setText(pers.getNombre());
-    	TextField apellidosTxtf = new TextField();
-    	apellidosTxtf.setText(pers.getApellido());
-    	TextField edadTxtf = new TextField();
-    	edadTxtf.setText(pers.getEdad()+"");
-    	Button agregarButton = new Button("Agregar");
-    	agregarGPane.addRow(0, new Text("Nombre: "), nombreTxtf);
-		agregarGPane.addRow(1, new Text("Apellidos: "), apellidosTxtf);
-		agregarGPane.addRow(2, new Text("Edad: "), edadTxtf);
-		agregarGPane.addRow(3, agregarButton);
-		GridPane.setColumnSpan(agregarButton, 2);
-		agregarButton.setMaxWidth(agregarGPane.getWidth());
-
-		Scene agregarScene = new Scene(agregarGPane);
-		Stage modificarPersonaStg = new Stage();
-		
-		agregarButton.setOnAction(e -> {
-			try {
-				int indexPersona = data.indexOf(pers);
-				Persona newPersona = new Persona(nombreTxtf.getText(),apellidosTxtf.getText(),Integer.parseInt(edadTxtf.getText()));
-				data.set(indexPersona,newPersona);
-				personaTableView.setItems(data);
-				gestorDB.modificarPersona(pers,newPersona);
-				modificarPersonaStg.close();
-			} catch (NumberFormatException numberFormat) {
-				mostrarVentanaEmergente("Edad no es numero", "La edad debe ser un numero", AlertType.ERROR);
-				return;
-			} catch (SQLException sqlE) {}			
-		});
-		modificarPersonaStg.setScene(agregarScene);
-		modificarPersonaStg.initModality(Modality.APPLICATION_MODAL);
-		modificarPersonaStg.showAndWait();
+    private static void mostrarVentanaEmergente(String titulo,String content, AlertType tipo) {
+    	Alert anadidaPersona = new Alert(tipo);
+		anadidaPersona.setTitle(titulo);
+		anadidaPersona.setHeaderText(null);
+		anadidaPersona.setContentText(content);
+		anadidaPersona.showAndWait();
     }
-    
-
 }
