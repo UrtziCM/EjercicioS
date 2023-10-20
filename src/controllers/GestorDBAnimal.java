@@ -1,33 +1,40 @@
 package controllers;
 
-import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import model.Persona;
+import javafx.scene.image.Image;
+import model.Animal;
 
-public class GestorDBPersona {
+public class GestorDBAnimal {
     private ConexionDB conexion;
 
-    public ObservableList<Persona> cargarPersonas()  {
+    public ObservableList<Animal> cargarPersonas()  {
     	
-    	ObservableList<Persona> personas = FXCollections.observableArrayList();
+    	ObservableList<Animal> animales = FXCollections.observableArrayList();
         try {
             conexion = new ConexionDB();        	
-        	String consulta = "SELECT * FROM Persona";
+        	String consulta = "SELECT * FROM Animal";
         	PreparedStatement pstmt = conexion.getConexion().prepareStatement(consulta);      
         	ResultSet rs = pstmt.executeQuery();   
 				
 			 while (rs.next()) {
-		            String nombre = rs.getString("nombre");
-		            String apellidos = rs.getString("apellidos");
-		            int edad = rs.getInt("edad");
-	                Persona p = new Persona(nombre,apellidos,edad);
-	                System.out.println(p.toString());
-	                personas.add(p);        
+			 	int id = rs.getInt("id");
+	            String nombre = rs.getString("nombre");
+	            String especie = rs.getString("especie");
+	            String raza = rs.getString("raza");
+	            char sexo = rs.getString("sexo").charAt(0);
+	            int edad = rs.getInt("edad");
+	            double peso = rs.getDouble("peso");
+	            String observaciones = rs.getString("observaciones");
+	            Date primeraConsulta = rs.getDate("primeraConsulta");
+	            Image foto = new Image(this.getClass().getResource("/img/placeholder.png").toString());
+                Animal a = new Animal(id, nombre,especie,raza, sexo, edad, peso, observaciones, primeraConsulta, foto);
+                animales.add(a);        
         }             
 		rs.close();       
         conexion.closeConexion();
@@ -35,32 +42,46 @@ public class GestorDBPersona {
 	    } catch (SQLException e) {	    	
 	    	e.printStackTrace();
 	    }    
-        return personas;    
+        return animales;
     }
 
-	public void addPersona(Persona newPersona) throws SQLException {
+	public void addAnimal(Animal newAnimal) throws SQLException {
 		conexion = new ConexionDB(); 
 	    Statement stmt = conexion.getConexion().createStatement();
-	    String sql = "INSERT INTO Persona(nombre,apellidos,edad) VALUES ('" + newPersona.getNombre() + "','" + newPersona.getApellido()+ "',"+ newPersona.getEdad() +")";
+	    String sql = "INSERT INTO `Animal` (`nombre`, `especie`, `raza`, `sexo`, `edad`, `peso`, `observaciones`, `primeraConsulta`, `foto`) "
+	    		+ "VALUES ('"+newAnimal.getNombre()+"',"
+				+ " '"+newAnimal.getEspecie()+"',"
+				+ " '"+newAnimal.getRaza()+"',"
+				+ " '"+newAnimal.getSexo()+"',"
+				+ " '"+newAnimal.getEdad()+"',"
+				+ " '"+newAnimal.getPeso()+"',"
+				+ " '"+newAnimal.getObservaciones()+"',"
+				+ " '"+newAnimal.getPrimeraConsulta().toString()+"',"
+				+ " '"+newAnimal.getFoto()+"'"
+				+ ")";
 	    stmt.executeUpdate(sql);
 	    conexion.closeConexion();
 	}
-	public void borrarPersona(Persona newPersona) throws SQLException {
+	public void borrarAnimal(Animal animal) throws SQLException {
 		conexion = new ConexionDB(); 
 	    Statement stmt = conexion.getConexion().createStatement();
-	    String sql = "DELETE FROM Persona WHERE nombre='" + newPersona.getNombre() + "' apellido='" + newPersona.getApellido() + "' edad=" + newPersona.getEdad();
+	    String sql = "DELETE FROM Animal WHERE id=" + animal.getId();
 	    stmt.executeUpdate(sql);
 	    conexion.closeConexion();
 	}
-	public void modificarPersona(Persona oldPersona,Persona newPersona) throws SQLException {
+	public void modificarAnimal(Animal oldAnimal,Animal newAnimal) throws SQLException {
 		conexion = new ConexionDB(); 
 	    Statement stmt = conexion.getConexion().createStatement();
-	    String sql = "UPDATE Persona "
-	    		+ "SET nombre='"+newPersona.getNombre()+"',"
-    				+ "apellidos='"+newPersona.getApellido()+"',"
-					+ "edad="+newPersona.getEdad()
-				+ " WHERE nombre='" + oldPersona.getNombre()	+ "' AND apellidos='" + oldPersona.getApellido() 
-					+ "' AND edad=" + oldPersona.getEdad();
+	    String sql = "UPDATE Animal "
+	    		+ "SET nombre='"+newAnimal.getNombre()+"',"
+    				+ "especie='"+newAnimal.getEspecie()+"',"
+    				+ "raza='"+newAnimal.getRaza()+"',"
+    				+ "sexo='"+newAnimal.getSexo()+"',"
+					+ "edad='"+newAnimal.getEdad()+"',"
+					+ "peso='"+newAnimal.getPeso()+"',"
+					+ "observaciones='"+newAnimal.getObservaciones()+"',"
+					+ "foto='"+newAnimal.getFoto()
+				+ " WHERE id=" + oldAnimal.getId();
 	    stmt.executeUpdate(sql);
 	    conexion.closeConexion();
 	}
