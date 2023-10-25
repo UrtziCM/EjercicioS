@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -19,12 +20,12 @@
    <center>
       <TableView fx:id="animalTableView" prefHeight="410.0" prefWidth="638.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="nombreColumn" prefWidth="216.0" text="NOMBRE" />
-          <TableColumn fx:id="especieColumn" maxWidth="399.0" minWidth="0.0" prefWidth="167.0" text="ESPECIE" />
-            <TableColumn fx:id="razaColumn" maxWidth="1.7976931348623157E308" prefWidth="129.0" text="RAZA" />
-            <TableColumn fx:id="sexoColumn" minWidth="0.0" prefWidth="63.0" text="SEXO" />
-            <TableColumn fx:id="edadColumn" maxWidth="137.0" minWidth="0.0" prefWidth="75.0" text="EDAD" />
-            <TableColumn fx:id="pesoColumn" minWidth="0.0" prefWidth="92.0" text="PESO" />
+          <TableColumn fx:id="nombreColumn" editable="false" prefWidth="216.0" sortable="false" text="NOMBRE" />
+          <TableColumn fx:id="especieColumn" editable="false" maxWidth="399.0" minWidth="0.0" prefWidth="167.0" sortable="false" text="ESPECIE" />
+            <TableColumn fx:id="razaColumn" editable="false" maxWidth="1.7976931348623157E308" prefWidth="129.0" sortable="false" text="RAZA" />
+            <TableColumn fx:id="sexoColumn" editable="false" minWidth="0.0" prefWidth="63.0" sortable="false" text="SEXO" />
+            <TableColumn fx:id="edadColumn" editable="false" maxWidth="137.0" minWidth="0.0" prefWidth="75.0" sortable="false" text="EDAD" />
+            <TableColumn fx:id="pesoColumn" editable="false" minWidth="0.0" prefWidth="92.0" sortable="false" text="PESO" />
         </columns>
          <BorderPane.margin>
             <Insets bottom="20.0" left="20.0" right="20.0" />
@@ -72,6 +73,7 @@
             <DatePicker fx:id="primeraDatePicker" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Observaciones" />
             <TextArea fx:id="observacionesTextarea" prefHeight="140.0" prefWidth="206.0" />
+            <Button fx:id="modificarSimple" mnemonicParsing="false" text="Modificar datos" />
          </children>
       </VBox>
    </right>
