@@ -13,9 +13,9 @@ public class Animal {
 	double peso;
 	String observaciones;
 	Date primeraConsulta;
-	Image foto;
+	String foto;
 	public Animal(int id, String nombre, String especie, String raza, char sexo, int edad, double peso,
-			String observaciones, Date primeraConsulta, Image foto) {
+			String observaciones, Date primeraConsulta, String foto) {
 		this.id = id;
 		this.nombre = nombre;
 		this.especie = especie;
@@ -28,7 +28,7 @@ public class Animal {
 		this.foto = foto;
 	}
 	public Animal(String nombre, String especie, String raza, char sexo, int edad, double peso,
-			String observaciones, Date primeraConsulta, Image foto) {
+			String observaciones, Date primeraConsulta, String foto) {
 		this.id = id;
 		this.nombre = nombre;
 		this.especie = especie;
@@ -40,6 +40,20 @@ public class Animal {
 		this.primeraConsulta = primeraConsulta;
 		this.foto = foto;
 	}
+	
+	public Animal(Animal anim) {
+		this.id = anim.id;
+		this.nombre = anim.nombre;
+		this.especie = anim.especie;
+		this.raza = anim.raza;
+		this.sexo = anim.sexo;
+		this.edad = anim.edad;
+		this.peso = anim.peso;
+		this.observaciones = anim.observaciones;
+		this.primeraConsulta = anim.primeraConsulta;
+		this.foto = anim.foto;
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -94,10 +108,10 @@ public class Animal {
 	public void setPrimeraConsulta(Date primeraConsulta) {
 		this.primeraConsulta = primeraConsulta;
 	}
-	public Image getFoto() {
+	public String getFoto() {
 		return foto;
 	}
-	public void setFoto(Image foto) {
+	public void setFoto(String foto) {
 		this.foto = foto;
 	}
 	@Override
