@@ -32,9 +32,15 @@ public class GestorDBAnimal {
 	            double peso = rs.getDouble("peso");
 	            String observaciones = rs.getString("observaciones");
 	            Date primeraConsulta = rs.getDate("primeraConsulta");
-	            Image foto = new Image(this.getClass().getResource("/img/placeholder.png").toString());
-                Animal a = new Animal(id, nombre,especie,raza, sexo, edad, peso, observaciones, primeraConsulta, foto);
-                animales.add(a);        
+	            String foto;
+	            if (this.getClass().getResource("/img/"+ rs.getString("foto"))!= null) {	            	
+	            	foto = this.getClass().getResource("/img/"+ rs.getString("foto")).toString();
+	            }
+	            else {
+	            	foto = this.getClass().getResource("/img/placeholder.png").toString();
+	            }
+				Animal a = new Animal(id, nombre,especie,raza, sexo, edad, peso, observaciones, primeraConsulta, foto);
+                animales.add(a);
         }             
 		rs.close();       
         conexion.closeConexion();
@@ -80,7 +86,7 @@ public class GestorDBAnimal {
 					+ "edad='"+newAnimal.getEdad()+"',"
 					+ "peso='"+newAnimal.getPeso()+"',"
 					+ "observaciones='"+newAnimal.getObservaciones()+"',"
-					+ "foto='"+newAnimal.getFoto()
+					+ "foto='"+newAnimal.getFoto() + "'"
 				+ " WHERE id=" + oldAnimal.getId();
 	    stmt.executeUpdate(sql);
 	    conexion.closeConexion();
