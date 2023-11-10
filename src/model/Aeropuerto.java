@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import javafx.scene.image.Image;
 
-public class Animal {
+public class Aeropuerto {
 	int id;
 	String nombre,especie,raza;
 	char sexo;
@@ -14,7 +14,7 @@ public class Animal {
 	String observaciones;
 	Date primeraConsulta;
 	String foto;
-	public Animal(int id, String nombre, String especie, String raza, char sexo, int edad, double peso,
+	public Aeropuerto(int id, String nombre, String especie, String raza, char sexo, int edad, double peso,
 			String observaciones, Date primeraConsulta, String foto) {
 		this.id = id;
 		this.nombre = nombre;
@@ -27,7 +27,7 @@ public class Animal {
 		this.primeraConsulta = primeraConsulta;
 		this.foto = foto;
 	}
-	public Animal(String nombre, String especie, String raza, char sexo, int edad, double peso,
+	public Aeropuerto(String nombre, String especie, String raza, char sexo, int edad, double peso,
 			String observaciones, Date primeraConsulta, String foto) {
 		this.id = id;
 		this.nombre = nombre;
@@ -41,7 +41,7 @@ public class Animal {
 		this.foto = foto;
 	}
 	
-	public Animal(Animal anim) {
+	public Aeropuerto(Aeropuerto anim) {
 		this.id = anim.id;
 		this.nombre = anim.nombre;
 		this.especie = anim.especie;
@@ -126,7 +126,7 @@ public class Animal {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Animal other = (Animal) obj;
+		Aeropuerto other = (Aeropuerto) obj;
 		return id == other.id;
 	}
 	

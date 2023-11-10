@@ -8,14 +8,14 @@ import java.sql.Statement;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
-import model.Animal;
+import model.Aeropuerto;
 
 public class GestorDBAnimal {
     private ConexionDB conexion;
 
-    public ObservableList<Animal> cargarPersonas()  {
+    public ObservableList<Aeropuerto> cargarPersonas()  {
     	
-    	ObservableList<Animal> animales = FXCollections.observableArrayList();
+    	ObservableList<Aeropuerto> animales = FXCollections.observableArrayList();
         try {
             conexion = new ConexionDB();        	
         	String consulta = "SELECT * FROM Animal";
@@ -39,7 +39,7 @@ public class GestorDBAnimal {
 	            else {
 	            	foto = this.getClass().getResource("/img/placeholder.png").toString();
 	            }
-				Animal a = new Animal(id, nombre,especie,raza, sexo, edad, peso, observaciones, primeraConsulta, foto);
+				Aeropuerto a = new Aeropuerto(id, nombre,especie,raza, sexo, edad, peso, observaciones, primeraConsulta, foto);
                 animales.add(a);
         }             
 		rs.close();       
@@ -51,7 +51,7 @@ public class GestorDBAnimal {
         return animales;
     }
 
-	public void addAnimal(Animal newAnimal) throws SQLException {
+	public void addAnimal(Aeropuerto newAnimal) throws SQLException {
 		conexion = new ConexionDB(); 
 	    Statement stmt = conexion.getConexion().createStatement();
 	    String sql = "INSERT INTO `Animal` (`nombre`, `especie`, `raza`, `sexo`, `edad`, `peso`, `observaciones`, `primeraConsulta`, `foto`) "
@@ -68,14 +68,14 @@ public class GestorDBAnimal {
 	    stmt.executeUpdate(sql);
 	    conexion.closeConexion();
 	}
-	public void borrarAnimal(Animal animal) throws SQLException {
+	public void borrarAnimal(Aeropuerto animal) throws SQLException {
 		conexion = new ConexionDB(); 
 	    Statement stmt = conexion.getConexion().createStatement();
 	    String sql = "DELETE FROM Animal WHERE id=" + animal.getId();
 	    stmt.executeUpdate(sql);
 	    conexion.closeConexion();
 	}
-	public void modificarAnimal(Animal oldAnimal,Animal newAnimal) throws SQLException {
+	public void modificarAnimal(Aeropuerto oldAnimal,Aeropuerto newAnimal) throws SQLException {
 		conexion = new ConexionDB(); 
 	    Statement stmt = conexion.getConexion().createStatement();
 	    String sql = "UPDATE Animal "

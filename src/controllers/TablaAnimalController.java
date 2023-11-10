@@ -1,6 +1,5 @@
 package controllers;
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,7 +30,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.Animal;
+import model.Aeropuerto;
 
 public class TablaAnimalController {
 
@@ -48,30 +47,30 @@ public class TablaAnimalController {
 	private TextArea observacionesTextarea;
 
 	@FXML
-	private TableView<Animal> animalTableView;
+	private TableView<Aeropuerto> animalTableView;
 
 	@FXML
-	private TableColumn<Animal, String> nombreColumn;
+	private TableColumn<Aeropuerto, String> nombreColumn;
 
 	@FXML
-	private TableColumn<Animal, String> especieColumn;
+	private TableColumn<Aeropuerto, String> especieColumn;
 
 	@FXML
-	private TableColumn<Animal, String> razaColumn;
+	private TableColumn<Aeropuerto, String> razaColumn;
 
 	@FXML
-	private TableColumn<Animal, Character> sexoColumn;
+	private TableColumn<Aeropuerto, Character> sexoColumn;
 
 	@FXML
-	private TableColumn<Animal, Integer> edadColumn;
+	private TableColumn<Aeropuerto, Integer> edadColumn;
 
 	@FXML
-	private TableColumn<Animal, Float> pesoColumn;
-	
+	private TableColumn<Aeropuerto, Float> pesoColumn;
+
 	@FXML
 	private Button modificarSimple;
-	
-	private ObservableList<Animal> data;
+
+	private ObservableList<Aeropuerto> data;
 	private GestorDBAnimal gestorDB;
 
 	public void initialize() {
@@ -82,15 +81,15 @@ public class TablaAnimalController {
 		sexoColumn.setCellValueFactory(new PropertyValueFactory<>("sexo"));
 		edadColumn.setCellValueFactory(new PropertyValueFactory<>("edad"));
 		pesoColumn.setCellValueFactory(new PropertyValueFactory<>("peso"));
-		
+
 		filterTxtf.textProperty().addListener(e -> {
-			FilteredList<Animal> filteredData = new FilteredList<Animal>(data);
+			FilteredList<Aeropuerto> filteredData = new FilteredList<Aeropuerto>(data);
 			filteredData.setPredicate(s -> s.getNombre().contains(filterTxtf.getText()));
 			animalTableView.setItems(filteredData);
 		});
 
 		animalTableView.setOnMouseClicked(e -> {
-			Animal selectedAnimal = animalTableView.getSelectionModel().getSelectedItem();
+			Aeropuerto selectedAnimal = animalTableView.getSelectionModel().getSelectedItem();
 			if (selectedAnimal != null) {
 				modificarSimple.setDisable(false);
 				imagenMascota.setImage(new Image(selectedAnimal.getFoto()));
@@ -102,7 +101,7 @@ public class TablaAnimalController {
 		gestorDB = new GestorDBAnimal();
 		data = gestorDB.cargarPersonas();
 		animalTableView.setItems(data);
-		
+
 		modificarSimple.setOnAction(e -> modificarDatosSuperiores());
 		modificarSimple.setDisable(true);
 	}
@@ -133,7 +132,7 @@ public class TablaAnimalController {
 
 	@FXML
 	void modificarAnimal(ActionEvent event) {
-		Animal oldAnimal = animalTableView.getSelectionModel().getSelectedItem();
+		Aeropuerto oldAnimal = animalTableView.getSelectionModel().getSelectedItem();
 		if (oldAnimal != null) {
 			ventanaModificarAnimal(animalTableView.getSelectionModel().getSelectedItem());
 			if (!oldAnimal.equals(animalTableView.getSelectionModel().getSelectedItem()))
@@ -181,17 +180,17 @@ public class TablaAnimalController {
 		agregarButton.setOnAction(e -> {
 			try {
 				String imagePath = fileButton.getProperties().get("dest").toString();
-				imagePath = imagePath.replace("\\", "/").substring(imagePath.indexOf('/',countChars(imagePath, '/')+1));
-				
-				
-				Animal newAnimal = new Animal(nombreTxtf.getText(), especieTxtf.getText(), razaTxtf.getText(),
+				imagePath = imagePath.replace("\\", "/")
+						.substring(imagePath.indexOf('/', countChars(imagePath, '/') + 1));
+
+				Aeropuerto newAnimal = new Aeropuerto(nombreTxtf.getText(), especieTxtf.getText(), razaTxtf.getText(),
 						Character.toUpperCase(sexoTxtf.getText().charAt(0)), Integer.parseInt(edadTxtf.getText()),
 						Double.parseDouble(pesoTxtf.getText()), obsTextA.getText(),
-						new Date(dateFirst.getValue().toEpochDay() * 24 * 3600 * 1000),
-						imagePath);
+						new Date(dateFirst.getValue().toEpochDay() * 24 * 3600 * 1000), imagePath);
 				if (!data.contains(newAnimal)) {
 					if (newAnimal.getSexo() != 'M' && newAnimal.getSexo() != 'H') {
-						mostrarVentanaEmergente("Sexo incorrecto", "El sexo del animal debe ser 'M' o 'H'", AlertType.ERROR);
+						mostrarVentanaEmergente("Sexo incorrecto", "El sexo del animal debe ser 'M' o 'H'",
+								AlertType.ERROR);
 						return;
 					}
 					data.add(newAnimal);
@@ -208,9 +207,6 @@ public class TablaAnimalController {
 			} catch (NumberFormatException numberFormat) {
 				mostrarVentanaEmergente("Edad no es numero", "La edad debe ser un numero", AlertType.ERROR);
 				return;
-			} catch (IOException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
 			}
 		});
 		agregarPersonaStg.setScene(agregarScene);
@@ -219,7 +215,7 @@ public class TablaAnimalController {
 		return true;
 	}
 
-	private boolean ventanaModificarAnimal(Animal animalMod) {
+	private boolean ventanaModificarAnimal(Aeropuerto animalMod) {
 		GridPane modificarGPane = new GridPane();
 		TextField nombreTxtf = new TextField();
 		nombreTxtf.setText(animalMod.getNombre());
@@ -266,14 +262,15 @@ public class TablaAnimalController {
 
 		modificarButton.setOnAction(e -> {
 			try {
-				Animal newAnimal = new Animal(nombreTxtf.getText(), especieTxtf.getText(), razaTxtf.getText(),
+				Aeropuerto newAnimal = new Aeropuerto(nombreTxtf.getText(), especieTxtf.getText(), razaTxtf.getText(),
 						Character.toUpperCase(sexoTxtf.getText().charAt(0)), Integer.parseInt(edadTxtf.getText()),
 						Double.parseDouble(pesoTxtf.getText()), obsTextA.getText(),
 						new Date(dateFirst.getValue().toEpochDay() * 24 * 3600 * 1000),
 						fileButton.getProperties().get("dest").toString());
 				if (!data.contains(newAnimal)) {
 					if (newAnimal.getSexo() != 'M' && newAnimal.getSexo() != 'H') {
-						mostrarVentanaEmergente("Sexo incorrecto", "El sexo del animal debe ser 'M' o 'H'", AlertType.ERROR);
+						mostrarVentanaEmergente("Sexo incorrecto", "El sexo del animal debe ser 'M' o 'H'",
+								AlertType.ERROR);
 						return;
 					}
 					data.set(data.indexOf(animalMod), newAnimal);
@@ -305,12 +302,13 @@ public class TablaAnimalController {
 		anadidoAnimal.setContentText(content);
 		anadidoAnimal.showAndWait();
 	}
+
 	private void modificarDatosSuperiores() {
-		Animal anim = new Animal(animalTableView.getSelectionModel().getSelectedItem());
+		Aeropuerto anim = new Aeropuerto(animalTableView.getSelectionModel().getSelectedItem());
 		anim.setPrimeraConsulta(new Date(primeraDatePicker.getValue().toEpochDay() * 24 * 3600 * 1000));
 		anim.setObservaciones(observacionesTextarea.getText());
 		try {
-			gestorDB.modificarAnimal(animalTableView.getSelectionModel().getSelectedItem(),anim);
+			gestorDB.modificarAnimal(animalTableView.getSelectionModel().getSelectedItem(), anim);
 			gestorDB = new GestorDBAnimal();
 			data = gestorDB.cargarPersonas();
 		} catch (SQLException e) {
@@ -318,14 +316,15 @@ public class TablaAnimalController {
 			e.printStackTrace();
 		}
 		animalTableView.setItems(data);
-		mostrarVentanaEmergente("Modificado con éxito", "Se han actualizado el/los campo/s observaciones y/o fecha de primera consulta", AlertType.INFORMATION);
+		mostrarVentanaEmergente("Modificado con éxito",
+				"Se han actualizado el/los campo/s observaciones y/o fecha de primera consulta", AlertType.INFORMATION);
 	}
-	
+
 	/**
 	 * Counts how many times a character appears in a given String.
 	 * 
 	 * @param text The text from where the characters will be counted
-	 * @param ch The character to be counted
+	 * @param ch   The character to be counted
 	 * @return Integer with the number of times the char appears
 	 */
 	private static int countChars(String text, char ch) {
