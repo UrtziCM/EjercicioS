@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="495.0" prefWidth="1009.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TablaAnimalController">
+   <center>
+      <TableView fx:id="animalTableView" prefHeight="410.0" prefWidth="638.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="nombreColumn" editable="false" prefWidth="216.0" sortable="false" text="NOMBRE" />
+          <TableColumn fx:id="especieColumn" editable="false" maxWidth="399.0" minWidth="0.0" prefWidth="167.0" sortable="false" text="ESPECIE" />
+            <TableColumn fx:id="razaColumn" editable="false" maxWidth="1.7976931348623157E308" prefWidth="129.0" sortable="false" text="RAZA" />
+            <TableColumn fx:id="sexoColumn" editable="false" minWidth="0.0" prefWidth="63.0" sortable="false" text="SEXO" />
+            <TableColumn fx:id="edadColumn" editable="false" maxWidth="137.0" minWidth="0.0" prefWidth="75.0" sortable="false" text="EDAD" />
+            <TableColumn fx:id="pesoColumn" editable="false" minWidth="0.0" prefWidth="92.0" sortable="false" text="PESO" />
+        </columns>
+         <BorderPane.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" />
+         </BorderPane.margin>
+      </TableView>
+   </center>
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar>
+              <menus>
+                  <Menu mnemonicParsing="false" text="Archivo">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Cerrar" />
+                     </items>
+                  </Menu>
+                <Menu mnemonicParsing="false" text="Herramientas">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#agregarAnimal" text="Agregar" />
+                        <MenuItem mnemonicParsing="false" onAction="#modificarAnimal" text="Modificar" />
+                        <MenuItem mnemonicParsing="false" onAction="#eliminarAnimal" text="Eliminar" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="797.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Buscar:" />
+                  <TextField fx:id="filterTxtf" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <right>
+      <VBox alignment="CENTER" prefHeight="390.0" prefWidth="206.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+         <children>
+            <ImageView fx:id="imagenMascota" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+            <DatePicker fx:id="primeraDatePicker" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Observaciones" />
+            <TextArea fx:id="observacionesTextarea" prefHeight="140.0" prefWidth="206.0" />
+            <Button fx:id="modificarSimple" mnemonicParsing="false" text="Modificar datos" />
+         </children>
+      </VBox>
+   </right>
+</BorderPane>

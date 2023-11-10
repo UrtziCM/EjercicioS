@@ -8,7 +8,7 @@ public class ConexionDB {
     private Connection conexion;
     public ConexionDB() throws SQLException {
         String host = "localhost";
-        String baseDatos = "personas";
+        String baseDatos = "veterinaria";
         String usuario = "dm2";
         String password = "dm2";
         String cadenaConexion = "jdbc:mysql://" + host + ":3306/" + baseDatos;
